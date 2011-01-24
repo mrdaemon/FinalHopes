@@ -5,13 +5,11 @@
 #include <cstring>
 #include <string>
 
-#include "window.hpp"
+#include "login.hpp"
 #include "screen.hpp"
 #include "packets.hpp"
 #include "socketserver.hpp"
 
 int main(int argc, char** argv);
-
-void putAuthWindow();
 
 #endif //MAIN_H
