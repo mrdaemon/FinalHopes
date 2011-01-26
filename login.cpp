@@ -13,7 +13,8 @@ Login::Login(){
 	//Prepare window
 	window = new Window(
 			8, 40, 
-			(Screen::Get().getY() - 8) / 2, (Screen::Get().getX() - 40) / 2);
+			(Screen::Get().getH() - 8) / 2, (Screen::Get().getW() - 40) / 2);
+	wattron(window->getWin(), COLOR_PAIR(1));
 	wattron(window->getWin(), COLOR_PAIR(1));
 	window->fillWindow(' ');
 
@@ -34,27 +35,24 @@ Login::~Login(){
 
 bool Login::loop(){
 	bool done;
-	char keyPressed;
+	int keyPressed;
 	int i = 0;  //Window focus: 0: Username ; 1: Password ; 2: Login button ; 3: Exit button
 	do{
 		done = false;
 
 		keyPressed = wgetch(window->getWin());
 
-		//If valid character in ASCII table
-		if(keyPressed >= 0x20 && 
-           keyPressed < 0x7F){
-			if(i == 0 && username.size() <= 23){ //Username maximum character is 23
-				username.insert(username.size(), 1, keyPressed);
-				mvwprintw(window->getWin(), 2, strlen(usernamestr) + 2, username.c_str());
-			}else if(i == 1 && username.size() <= 23){ //Password maximum character is 24
-				password.insert(password.size(), 1, keyPressed);
-				mvwprintw(window->getWin(), 4, strlen(passwordstr) + 2, password.c_str());
-			}
-			continue;
-		}
-
 		switch(keyPressed){
+			case 0x20 ... 0x7E: //If valid character in ASCII table
+				if(i == 0 && username.size() <= 23){ //Username maximum character is 23
+					username.insert(username.size(), 1, keyPressed);
+					mvwprintw(window->getWin(), 2, strlen(usernamestr) + 2, username.c_str());
+				}else if(i == 1 && password.size() <= 23){ //Password maximum character is 24
+					password.insert(password.size(), 1, keyPressed);
+					std::string hidden = password;
+					mvwprintw(window->getWin(), 4, strlen(passwordstr) + 2, hidden.replace(0, password.size(), password.size(), '*').c_str());
+				}
+				break;
 			case 0x09: //Tab
 				if(i == 0){
 					wmove(window->getWin(), 4, strlen(passwordstr) + password.size() + 2);
@@ -91,13 +89,11 @@ bool Login::loop(){
 
 						//Receive packet
 						memcpy(&response, SocketServer::Get().receive(), sizeof(struct packet_login_response));
-						if(response.status == 0x00){
 							clearLine(5, 1, window->pos.w - 2);
+						if(response.status == 0x00){
 							printMiddle("Login succeed.", 5);
-							wmove(window->getWin(), 6, window->pos.w / 3 - strlen(loginButstr) / 2);
 							return true;
 						}else{
-							clearLine(5, 1, window->pos.w - 2);
 							printMiddle("Login failed.", 5);
 							wmove(window->getWin(), 6, window->pos.w / 3 - strlen(loginButstr) / 2);
 						}
@@ -115,7 +111,8 @@ bool Login::loop(){
 				}else if(i == 1 && !password.empty()){
 					password.resize(password.size() - 1);
 					mvwprintw(window->getWin(), 4, strlen(passwordstr) + 2 + password.size(), " ");
-					mvwprintw(window->getWin(), 4, strlen(passwordstr) + 2, password.c_str());
+					std::string hidden = password;
+					mvwprintw(window->getWin(), 4, strlen(passwordstr) + 2, hidden.replace(0, password.size(), password.size(), '*').c_str());
 				}
 				break;
 

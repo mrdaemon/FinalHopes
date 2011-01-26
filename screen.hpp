@@ -13,8 +13,8 @@ public:
 	void Init();
 	void Close();
 
-	int getY() const;
-	int getX() const;
+	int getW() const;
+	int getH() const;
 	void fillScreen(char fill);
 
 private:

@@ -8,10 +8,11 @@ Window::Window(int h, int w, int y, int x){
 
 	this->window = newwin(h, w, y, x);
 
-	setBorder(' ', ' ', ' ', ' ', ' ');
+	setBorder(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
 }
 Window::~Window(){
-	setBorder(' ', ' ', ' ', ' ', ' ');
+	setBorder(' ', ' ', ' ', ' ', ' ', ' ', ' ', ' ');
+	fillWindow(' ');
 	wrefresh(window);
 	delwin(this->window);
 }
@@ -29,13 +30,29 @@ void Window::fillWindow(char fill){
 		}
 	}
 }
+void Window::fillNoBorder(char fill){
+	for(int i = 1; i < this->pos.h - 1; i++){
+		for(int j = 1; j < this->pos.w - 1; j++){
+			mvwaddch(window, i, j, fill);
+		}
+	}
+}
+void Window::setBorder(char left, char right, char top, char bottom, char topleft, char topright, char botleft, char botright){
+	this->border.left     = left;    //Set border structure
+	this->border.right    = right;
+	this->border.top      = top;
+	this->border.bot      = bottom;
+	this->border.topleft  = topleft;
+	this->border.topright = topright;
+	this->border.botleft  = botleft;
+	this->border.botright = botright;
 
-void Window::setBorder(char left, char right, char top, char bottom, char corner){
-	this->border.left   = left;    //Set border structure
-	this->border.right  = right;
-	this->border.top    = top;
-	this->border.bot    = bottom;
-	this->border.corner = corner;
+	wborder(window, left, right, top, bottom, topleft, topright, botleft, botright);
+}
 
-	wborder(window, left, right, top, bottom, corner, corner, corner, corner);
+void Window::clearWindow(){
+	fillWindow(' ');
+}
+void Window::setCurrBorder(){
+	setBorder(border.left, border.right, border.top, border.bot, border.topleft, border.topright, border.botleft, border.botright);
 }

@@ -14,7 +14,10 @@ struct border{
 	char right;
 	char top;
 	char bot;
-	char corner;
+	char topleft;
+	char topright;
+	char botleft;
+	char botright;
 };
 
 class Window{
@@ -28,10 +31,13 @@ public:
 	WINDOW* getWin() const;
 	void winrefresh();
 	void fillWindow(char fill);
+	void fillNoBorder(char fill);
+	void setBorder(char left, char right, char top, char bottom, char topleft, char topright, char botleft, char botright);
 private:
 	WINDOW* window;
 
-	void setBorder(char left, char right, char top, char bottom, char corner);
+	void clearWindow();
+	void setCurrBorder();
 };
 
 #endif //WINDOW_H

@@ -8,8 +8,8 @@ int main(int argc, char** argv){
 
 	if(!has_colors()){
 		mvprintw(
-				Screen::Get().getY() / 2,
-				Screen::Get().getX() / 2 - strlen("No color!") / 2,
+				Screen::Get().getH() / 2,
+				Screen::Get().getW() / 2 - strlen("No color!") / 2,
 				"No color!");
 		return -1;
 	}
@@ -23,23 +23,26 @@ int main(int argc, char** argv){
 
 	SocketServer::Get().Init();
 
-	Login* login = new Login();
-
 	int window = 1;
-	switch(window){
-		case 0:
-			break;
-
-		case 1:
+	bool end = false;
+	do{
+		if(window == 0){
+			//Exit
+			end = true;
+		}else if(window == 1){
+			Login* login = new Login();
 			login->loop() ? window++ : window--;
-			break;
-
-		case 2:
-			//Stats
-			break;
-	}
-
-	delete login;
+			delete login;
+			Screen::Get().fillScreen(' ');
+		}else if(window == 2){
+			Stats* stats = new Stats();
+			stats->loop() ? window++ : window--;
+			delete stats;
+			Screen::Get().fillScreen(' ');
+		}else{
+			end = true;
+		}
+	}while(!end);
 
 	SocketServer::Get().Close();
 

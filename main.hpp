@@ -7,8 +7,7 @@
 
 #include "login.hpp"
 #include "screen.hpp"
-#include "packets.hpp"
-#include "socketserver.hpp"
+#include "stats.hpp"
 
 int main(int argc, char** argv);
 

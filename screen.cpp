@@ -10,22 +10,22 @@ void Screen::Init(){
 	cbreak();             //raw() otherwise
 	noecho();             //Don't show key pressed
 	keypad(stdscr, true); //Every keys
-	getmaxyx(stdscr, this->w, this->h);
+	getmaxyx(stdscr, this->h, this->w);
 }
 void Screen::Close(){
 	endwin();             //Stop screen mode
 }
 
-int Screen::getY() const{
+int Screen::getW() const{
 	return w;
 }
-int Screen::getX() const{
+int Screen::getH() const{
 	return h;
 }
 void Screen::fillScreen(char fill){
 	for(int i = 0; i < this->w; i++){
 		for(int j = 0; j < this->h; j++){
-			mvwaddch(stdscr, i, j, fill);
+			mvwaddch(stdscr, j, i, fill);
 		}
 	}
 }
