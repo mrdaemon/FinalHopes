@@ -15,7 +15,6 @@ Login::Login(){
 			8, 40, 
 			(Screen::Get().getH() - 8) / 2, (Screen::Get().getW() - 40) / 2);
 	wattron(window->getWin(), COLOR_PAIR(1));
-	wattron(window->getWin(), COLOR_PAIR(1));
 	window->fillWindow(' ');
 
 	printMiddle(title, 0);
@@ -30,6 +29,7 @@ Login::Login(){
 	wmove(window->getWin(), 2, strlen(usernamestr) + 2);
 }
 Login::~Login(){
+	wattroff(window->getWin(), COLOR_PAIR(1));
 	delete window;
 }
 
@@ -70,11 +70,17 @@ bool Login::loop(){
 				break;
 
 			case 0x0A: //Enter
-				if(i == 2){
+				if(i >= 0 && i <= 2){
 					if(username.empty() && password.empty()){
 						clearLine(5, 1, window->pos.w - 2);
 						printMiddle("Empty fields.", 5);
-						wmove(window->getWin(), 6, window->pos.w / 3 - strlen(loginButstr) / 2);
+						if(i == 0){
+							wmove(window->getWin(), 2, strlen(usernamestr) + username.size() + 2);
+						}else if(i == 1){
+							wmove(window->getWin(), 4, strlen(passwordstr) + password.size() + 2);
+						}else{
+							wmove(window->getWin(), 6, window->pos.w / 3 - strlen(loginButstr) / 2);
+						}
 					}else{
 						struct packet_login_request packet;
 						struct packet_login_response response;
@@ -95,7 +101,13 @@ bool Login::loop(){
 							return true;
 						}else{
 							printMiddle("Login failed.", 5);
-							wmove(window->getWin(), 6, window->pos.w / 3 - strlen(loginButstr) / 2);
+							if(i == 0){
+								wmove(window->getWin(), 2, strlen(usernamestr) + username.size() + 2);
+							}else if(i == 1){
+								wmove(window->getWin(), 4, strlen(passwordstr) + password.size() + 2);
+							}else{
+								wmove(window->getWin(), 6, window->pos.w / 3 - strlen(loginButstr) / 2);
+							}
 						}
 					}
 				}else if(i == 3){

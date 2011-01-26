@@ -16,7 +16,6 @@ int main(int argc, char** argv){
 	start_color();                          //Start color handling
 	init_color(COLOR_WHITE, 500, 500, 500); //White will be gray
 	init_pair(1, COLOR_WHITE, COLOR_BLUE);  //Regular window color
-	attron(COLOR_PAIR(1));
 
 	refresh();                 //Swap buffers, print result
 	getch();                   //Read key

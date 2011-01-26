@@ -41,7 +41,16 @@ bool Stats::loop(){
 	do{
 		done = false;
 
-		keyPressed = wgetch(stats);
+		name->winrefresh();
+		info->winrefresh();
+		banner->winrefresh();
+		button1->winrefresh();
+		button2->winrefresh();
+		button3->winrefresh();
+		button4->winrefresh();
+		stats->winrefresh();
+
+		keyPressed = wgetch(stats->getWin());
 
 		switch(keyPressed){
 			case 0x09: //Tab
@@ -114,15 +123,6 @@ bool Stats::loop(){
 				}
 				break; 
 		}
-
-		name->winrefresh();
-		info->winrefresh();
-		banner->winrefresh();
-		button1->winrefresh();
-		button2->winrefresh();
-		button3->winrefresh();
-		button4->winrefresh();
-		stats->winrefresh();
 
 	}while(!done);
 
