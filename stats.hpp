@@ -8,6 +8,10 @@
 #include "screen.hpp"
 #include "window.hpp"
 
+enum{
+	BUTTON1, BUTTON2, BUTTON3, BUTTON4, STATS
+};
+
 class Stats{
 public:
 	Stats();
@@ -24,7 +28,7 @@ private:
 	Window* button4;
 	Window* stats;
 
-	const char* bannerstr;
+	const char** bannerstr;
 	const char* button1str;
 	const char* button2str;
 	const char* button3str;
@@ -32,7 +36,8 @@ private:
 	const char** namestr;
 	const char* infostr;
 
-	void printCenter(const char* message, Window* window);
+	int ycur; //Cursor of scroll bar in stats window
+
 	void moveCenter(Window* button);
 };
 

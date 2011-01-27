@@ -29,7 +29,6 @@ private:
 	std::string username;
 	std::string password;
 
-	void printMiddle(const char* message, int y);
 	void clearLine(int y, int x, int length);
 };
 

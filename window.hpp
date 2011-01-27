@@ -2,12 +2,14 @@
 #define WINDOW_H
 
 #include <ncurses.h>
+#include <cstring>
 
 struct position{
-	int w;
-	int h;
-	int y;
-	int x;
+	int w,
+	    h,
+	    y,
+	    x;
+
 };
 struct border{
 	char left;
@@ -32,12 +34,18 @@ public:
 	void winrefresh();
 	void fillWindow(char fill);
 	void fillNoBorder(char fill);
+	void printMiddle(int y, const char* message);
+	void printCenter(const char* message);
 	void setBorder(char left, char right, char top, char bottom, char topleft, char topright, char botleft, char botright);
+	void setFocus(int y, int x);
+	void focus();
 private:
 	WINDOW* window;
 
 	void clearWindow();
 	void setCurrBorder();
+
+	int fy, fx;
 };
 
 #endif //WINDOW_H

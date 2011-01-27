@@ -1,6 +1,15 @@
 #include "stats.hpp"
 
 Stats::Stats(){
+	//Declare constants
+//	bannerstr =  "";
+	button1str = "Play now!";
+	button2str = "Achievement";
+	button3str = "History";
+	button4str = "Join chat";
+//	namestr =    "";
+//	infostr =    "";
+
 	name =    new Window(3, 52, 1, 1);
 	info =    new Window(1, 24, 4, 1);
 	banner =  new Window(5, 24, 1, Screen::Get().getW() - 25);
@@ -11,16 +20,31 @@ Stats::Stats(){
 	stats =   new Window(Screen::Get().getH() - 7, Screen::Get().getW() - 19, 6, 18);
 
 	stats->setBorder('|', '|', '=', '=', '+', '+', '+', '+');
+	button1->setBorder('|', '|', '=', '=', '+', '+', '+', '+');
+	button2->setBorder('|', '|', '=', '=', '+', '+', '+', '+');
+	button3->setBorder('|', '|', '=', '=', '+', '+', '+', '+');
+	button4->setBorder('|', '|', '=', '=', '+', '+', '+', '+');
+
+	ycur = 2;
 
 	name->fillWindow('n');
 	info->fillWindow('i');
 	banner->fillWindow('b');
-	button1->fillNoBorder('1');
-	button2->fillNoBorder('2');       //for test
-	button3->fillNoBorder('3');
-	button4->fillNoBorder('4');
-	stats->fillNoBorder('o');
+	button1->printCenter(button1str);
+	button2->printCenter(button2str);       //for test
+	button3->printCenter(button3str);
+	button4->printCenter(button4str);
+	mvwprintw(stats->getWin(), 1, stats->pos.w - 2, "^");
+	for(int i = 2; i < stats->pos.h - 2; i++){
+		mvwprintw(stats->getWin(), i, stats->pos.w - 2, "|");
+	}
+	mvwprintw(stats->getWin(), stats->pos.h - 2, stats->pos.w - 2, "v");
 
+	button1->setFocus(1, (button1->pos.w - strlen(button1str)) / 2);
+	button2->setFocus(1, (button2->pos.w - strlen(button2str)) / 2);
+	button3->setFocus(1, (button3->pos.w - strlen(button3str)) / 2);
+	button4->setFocus(1, (button4->pos.w - strlen(button4str)) / 2);
+	stats->setFocus(ycur, stats->pos.w - 2);
 }
 Stats::~Stats(){
 	delete name;
@@ -33,93 +57,143 @@ Stats::~Stats(){
 }
 
 bool Stats::loop(){
-	int i = 0; //Window focus: 0: 1: 2: buttons ; 3: stats.
-	bool done;
+	int focus; //Window focus: 0: 1: 2: 3: buttons ; 4: stats
+	bool done = false;
 	int keyPressed;
-	int barx; //Cursor of scroll bar
+
+	name->winrefresh();
+	info->winrefresh();
+	banner->winrefresh();
+	button1->winrefresh();
+	button2->winrefresh();
+	button3->winrefresh();
+	button4->winrefresh();
+	stats->winrefresh();
+
+	button1->focus();
+	focus = BUTTON1;
 
 	do{
-		done = false;
-
-		name->winrefresh();
-		info->winrefresh();
-		banner->winrefresh();
-		button1->winrefresh();
-		button2->winrefresh();
-		button3->winrefresh();
-		button4->winrefresh();
-		stats->winrefresh();
-
 		keyPressed = wgetch(stats->getWin());
 
 		switch(keyPressed){
 			case 0x09: //Tab
-				if(i == 0){
-					
-				}else if(i == 1){
+				switch(focus){
+					case BUTTON1:
+						button2->focus();
+						focus = BUTTON2;
+						break;
 
-				}else if(i == 2){
+					case BUTTON2:
+						button3->focus();
+						focus = BUTTON3;
+						break;
 
-				}else{
+					case BUTTON3:
+						button4->focus();
+						focus = BUTTON4;
+						break;
 
+					case BUTTON4:
+						stats->focus();
+						focus = STATS;
+						break;
+
+					case STATS:
+						button1->focus();
+						focus = BUTTON1;
+						break;
 				}
 				break;
 
 			case 0x0A: //Enter
-				if(i == 0){
+				switch(focus){
+					case BUTTON1:
+						//Start seeking game
+						break;
 
-				}else if(i == 1){
+					case BUTTON2:
+						//Switch stats for achievements
+						break;
 
-				}else if(i == 2){
+					case BUTTON3:
+						//Switch stats for history
+						break;
 
-				}else{
+					case BUTTON4:
+						//Switch for char screen
+						break;
 
+					case STATS:
+						//Page down
+						break;
 				}
 				break;
 
 			case KEY_LEFT:
-				if(i == 0){
-
-				}else if(i == 1){
-
-				}else if(i == 2){
-
-				}else{
-
+				switch(focus){
+					case STATS:
+						button4->focus();
+						focus = BUTTON4;
+						break;
 				}
 				break;
 
 			case KEY_RIGHT:
-				if(i == 0){
-
-				}else if(i == 1){
-
-				}else if(i == 2){
-
+				switch(focus){
+					case BUTTON1:
+					case BUTTON2:
+					case BUTTON3:
+					case BUTTON4:
+						stats->focus();
+						focus = STATS;
+						break;
 				}
 				break;
 
 			case KEY_UP:
-				if(i == 0){
+				switch(focus){
+					case BUTTON2:
+						button1->focus();
+						focus = BUTTON1;
+						break;
 
-				}else if(i == 1){
+					case BUTTON3:
+						button2->focus();
+						focus = BUTTON2;
+						break;
 
-				}else if(i == 2){
+					case BUTTON4:
+						button3->focus();
+						focus = BUTTON3;
+						break;
 
-				}else if(i == 3){
-
+					case STATS:
+						//Scroll up
+						break;
 				}
 				break;
 
 			case KEY_DOWN:
-				if(i == 0){
+				switch(focus){
+					case BUTTON1:
+						button2->focus();
+						focus = BUTTON2;
+						break;
 
-				}else if(i == 1){
+					case BUTTON2:
+						button3->focus();
+						focus = BUTTON3;
+						break;
 
-				}else if(i == 2){
+					case BUTTON3:
+						button4->focus();
+						focus = BUTTON4;
+						break;
 
-				}else if(i == 3){
-
+					case STATS:
+						//Scroll down
+						break;
 				}
 				break; 
 		}
@@ -129,9 +203,6 @@ bool Stats::loop(){
 	return false;
 }
 
-void Stats::printCenter(const char* message, Window* window){
-	mvwprintw(window->getWin(), window->pos.h / 2, (window->pos.w + strlen(message)) / 2, message);
-}
 void Stats::moveCenter(Window* window){
 	wmove(window->getWin(), window->pos.h / 2, window->pos.w / 2);
 }

@@ -37,6 +37,12 @@ void Window::fillNoBorder(char fill){
 		}
 	}
 }
+void Window::printMiddle(int y, const char* message){
+	mvwprintw(window, y, (pos.w - strlen(message)) / 2, message);
+}
+void Window::printCenter(const char* message){
+	mvwprintw(window, pos.h / 2, (pos.w - strlen(message)) / 2, message);
+}
 void Window::setBorder(char left, char right, char top, char bottom, char topleft, char topright, char botleft, char botright){
 	this->border.left     = left;    //Set border structure
 	this->border.right    = right;
@@ -55,4 +61,12 @@ void Window::clearWindow(){
 }
 void Window::setCurrBorder(){
 	setBorder(border.left, border.right, border.top, border.bot, border.topleft, border.topright, border.botleft, border.botright);
+}
+void Window::setFocus(int y, int x){
+	this->fy = y;
+	this->fx = x;
+}
+void Window::focus(){
+	wmove(window, fy, fx);
+	winrefresh();
 }

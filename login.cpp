@@ -1,6 +1,7 @@
 #include "login.hpp"
 
 Login::Login(){
+	//Declare constants
 	title = "-Login-";
 	usernamestr = "Username:";
 	passwordstr = "Password:";
@@ -17,7 +18,7 @@ Login::Login(){
 	wattron(window->getWin(), COLOR_PAIR(1));
 	window->fillWindow(' ');
 
-	printMiddle(title, 0);
+	window->printMiddle(0, title);
 	mvwprintw(window->getWin(), 2, 1, usernamestr);
 	mvwprintw(window->getWin(), 4, 1, passwordstr);
 
@@ -73,7 +74,7 @@ bool Login::loop(){
 				if(i >= 0 && i <= 2){
 					if(username.empty() && password.empty()){
 						clearLine(5, 1, window->pos.w - 2);
-						printMiddle("Empty fields.", 5);
+						window->printMiddle(5, "Empty fields.");
 						if(i == 0){
 							wmove(window->getWin(), 2, strlen(usernamestr) + username.size() + 2);
 						}else if(i == 1){
@@ -97,10 +98,10 @@ bool Login::loop(){
 						memcpy(&response, SocketServer::Get().receive(), sizeof(struct packet_login_response));
 							clearLine(5, 1, window->pos.w - 2);
 						if(response.status == 0x00){
-							printMiddle("Login succeed.", 5);
+							window->printMiddle(5, "Login succeed.");
 							return true;
 						}else{
-							printMiddle("Login failed.", 5);
+							window->printMiddle(5, "Login failed.");
 							if(i == 0){
 								wmove(window->getWin(), 2, strlen(usernamestr) + username.size() + 2);
 							}else if(i == 1){
@@ -140,9 +141,6 @@ bool Login::loop(){
 	return false;
 }
 
-void Login::printMiddle(const char* message, int y){
-	mvwprintw(window->getWin(), y, (window->pos.w - strlen(message)) / 2, message);
-}
 void Login::clearLine(int y, int x, int length){
 	std::string pad(length, ' ');
 	mvwprintw(window->getWin(), y, x, pad.c_str());
