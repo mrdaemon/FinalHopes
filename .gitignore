@@ -1,0 +1,6 @@
+/.waf*
+/.lock-*
+/build/
+*.swp
+*~
+/*.tar.bz2
