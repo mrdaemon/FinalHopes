@@ -14,16 +14,12 @@ def options(opt):
     opt.load('compiler_cxx')
     opt.add_option('--releaseflags', action="store_true", default=False,
         help='Enable release debug flags.')
+    opt.add_option('--with-pdcurses-dir', action="store", default=False,
+        help="Use pdcurses and specify where it is unpacked." \
+        "(Mostly useful for Win32 and cross-compilation)")
 
 def configure(conf):
     conf.load('compiler_cxx')
-
-    # Let's spare our windows friends some pain by setting
-    # then straight right away.
-    if sys.platform == 'win32':
-        print("Windows does not have (n)curses. Sorry.")
-        print("If you really want to, cygwin's your best bet.")
-        conf.fatal("Platform unsupported.")
 
     if sys.platform == 'darwin':
         print "Configuring for Mac OS X"
@@ -47,11 +43,30 @@ def configure(conf):
 
     print(' '.join(["Configuring for", p]))
 
-    # Check for ncurses and panel
-    conf.check_cxx(header_name='ncurses.h', lib=['ncurses'],
-        uselib_store='NCURSES')
-    conf.check_cxx(lib=['panel'], uselib_store='NCURSES',
-        msg="Checking for ncurses-specific library: panel")
+    # Use extra pdcurses directory? (mostly useful on windows
+    # and for cross compiling.
+    if conf.options.with_pdcurses_dir:
+        conf.env.append_unique('INCLUDES', conf.options.with_pdcurses_dir)
+        conf.env.append_unique('LIBPATH', conf.options.with_pdcurses_dir)
+
+    # Check for 'curses.h', but do not link just yet.
+    # We just wish to know if curses is available at all.
+    conf.check(features="cxx", header_name='curses.h', mandatory=True)
+
+    # Try to link against pdcurses if specified.
+    # If not, in normal scenarios, link against ncurses.
+    # If all else fails, try grandpa curses.
+    if conf.options.with_pdcurses_dir:
+        conf.check_cxx(lib='pdcurses', uselib_store="CURSES")
+    else:
+        try:
+            conf.check_cxx(lib='ncurses', uselib_store="CURSES")
+        except conf.errors.ConfigurationError:
+            conf.check_cxx(lib='curses', uselib_store="CURSES")
+
+    # Try panel lib, from curses. It's not always present.
+    conf.check_cxx(lib="panel", uselib_store="CURSES",
+        msg="Checking if your curses supports 'panel'")
 
     # Common Compiler Flags
     conf.env.append_unique('CXXFLAGS', ['-O2', '-Wall'])
@@ -65,7 +80,7 @@ def build(bld):
         features = 'cxx cxxprogram',
         target = 'this',
         source = 'stats.cpp login.cpp window.cpp screen.cpp main.cpp socket.cpp socketserver.cpp packets.cpp',
-        use='NCURSES',
+        use='CURSES',
     )
 
     if bld.env.release:
