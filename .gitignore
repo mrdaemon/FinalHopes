@@ -4,3 +4,6 @@
 *.swp
 *~
 /*.tar.bz2
+*.o
+/this
+/Makefile
