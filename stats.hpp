@@ -1,7 +1,7 @@
 #ifndef STATS_H
 #define STATS_H
 
-#include <ncurses.h>
+#include <curses.h>
 #include <string>
 #include <cstring>
 

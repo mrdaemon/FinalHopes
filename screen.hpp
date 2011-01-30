@@ -1,7 +1,7 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include <ncurses.h>
+#include <curses.h>
 
 class Screen{
 public:

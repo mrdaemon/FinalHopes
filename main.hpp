@@ -1,7 +1,7 @@
 #ifndef MAIN_H
 #define MAIN_H
 
-#include <ncurses.h>
+#include <curses.h>
 #include <cstring>
 #include <string>
 

@@ -1,7 +1,7 @@
 #ifndef LOGIN_H
 #define LOGIN_H
 
-#include <ncurses.h>
+#include <curses.h>
 #include <string>
 #include <cstring>
 
