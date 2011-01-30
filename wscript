@@ -58,15 +58,20 @@ def configure(conf):
     # If all else fails, try grandpa curses.
     if conf.options.with_pdcurses_dir:
         conf.check_cxx(lib='pdcurses', uselib_store="CURSES")
+        # pdcurses has 'panel.h' but it's all in the same library.
+        # i.e. not 'panel', so no need to pollute linker flags with it.
+        conf.check_cxx(header_name='panel.h',
+            msg="Checking if pdcurses provides 'panel.h'")
     else:
         try:
             conf.check_cxx(lib='ncurses', uselib_store="CURSES")
         except conf.errors.ConfigurationError:
             conf.check_cxx(lib='curses', uselib_store="CURSES")
 
-    # Try panel lib, from curses. It's not always present.
-    conf.check_cxx(lib="panel", uselib_store="CURSES",
-        msg="Checking if your curses supports 'panel'")
+        # Try panel lib, from curses. It's not always present.
+        # Again, pdcurses does not provide it separately.
+        conf.check_cxx(lib="panel", uselib_store="CURSES",
+            msg="Checking if your curses supports 'panel'")
 
     # Common Compiler Flags
     conf.env.append_unique('CXXFLAGS', ['-O2', '-Wall'])
